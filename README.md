@@ -27,8 +27,13 @@ The activity is based from the CRISP-DM framework which follows the following hi
 This step will allow us to create a goal based on the current needs of an individual/organization.
 The goal for this activity is:
 
-`To determine the best parameters that will be used in creating an optimum model that will predict the appropriate value for used cars`
-<To Edit>
+`To predict if the client will subscribe a term deposit or not`
+
+The data used in this modeling activity is related with direct marketing campaigns of a Portuguese banking institution. 
+Often, more than one contact to the same client was required, in order to access if the product (bank term deposit) would be (or not) subscribed.
+The marketing campaigns were based on phone calls.
+
+Note: Term Deposits are deposits that are usually made for a few months to several years and reward you with guaranteed returns.
     
 ### Data Understanding
 
@@ -38,83 +43,80 @@ This step will allow us to have a general understanding of data by analyzing rel
     <img src = images/sklearn_algo_cs.png width = 70%/>
 </center>
 
+The following features were used an input in this study:
+
+#### Input variables:
+
+##### Bank client data:
+1. age (numeric)
+2. job : type of job (categorical: "admin.","unknown","unemployed","management","housemaid","entrepreneur",
+                     "student","blue-collar","self-employed","retired","technician","services") 
+3. marital : marital status (categorical: "married","divorced","single"; note: "divorced" means divorced or widowed)
+4. education (categorical: "unknown","secondary","primary","tertiary")
+5. default: has credit in default? (binary: "yes","no")
+6. balance: average yearly balance, in euros (numeric) 
+7. housing: has housing loan? (binary: "yes","no")
+8. loan: has personal loan? (binary: "yes","no")
+
+##### Related with the last contact of the current campaign:
+9. contact: contact communication type (categorical: "unknown","telephone","cellular") 
+10. day: last contact day of the month (numeric)
+11. month: last contact month of year (categorical: "jan", "feb", "mar", ..., "nov", "dec")
+12. duration: last contact duration, in seconds (numeric)
+
+##### Other attributes:
+13. campaign: number of contacts performed during this campaign and for this client (numeric, includes last contact)
+14. pdays: number of days that passed by after the client was last contacted from a previous campaign (numeric, -1 means client was not previously contacted)
+15. previous: number of contacts performed before this campaign and for this client (numeric)
+16. poutcome: outcome of the previous marketing campaign (categorical: "unknown","other","failure","success")
+
+##### Output variable (desired target):
+17. y - has the client subscribed a term deposit? (binary: "yes","no")
+
 ### Data Preparation
-<To Edit>
 
-This step will ensure that the data has been preprocessed and that it has been prepared before performing any modeling activities. For this project, I have used the following preprocessing techniques. Note that I have tried two (2) attempts
+This step will ensure that the data has been preprocessed and that it has been prepared before performing any modeling activities.
+For this project, I have performed the following preprocessing techniques:
 
-- **Attempt 1 (My Submission)**
-- **Attempt 2**
-    
----    
-    
-1. General data cleaning
-    - The overall data set entries are `426880` records
-       - There is a feature named `VIN` - where VIN is a unique ID that identifies a vehicle
-       - The removal of VIN has also allowed further insights that some columns are not relevant with car price
-    - Some features that are irrelevant to the car price analysis have been removed accordingly
-       - This has been brought by insights during data review, such as that of VIN, features that are not meaningful to
-         the analysis, features that have excessive NaN values (e.g., `size`), features that have all NaN values except for the `price`, and features that have excessive amount of categories (e.g., `model`)
-       - The data mentioned removed was a calculated risk to improve overall performance of the model
-    - Something that I have done unique on my attempts are as follows:
-        - **Attempt 1**
-            - Removing the `model` feature represents a significant loss in data. Other than the fact that the number of categories are excessive, there are also mispelled entries which adds up to the complexity of cleaning it. I have attempted to clean this up using `manual checks and SpellCheckers` but to no avail.
-            - The results of my cleaning have allowed me to reduce `model` feature entries with NaN values from 29k to 24k and have added new entries on the manufacturer
-                These new entries mostly represent `Semi Trucks\Cargo Trucks` which is a good insight 
-        - **Attempt 2**
-            - I have removed the `year` feature and have computed and added `age` into the dataframe in an attempt to improve performance
-
-    
-       
-2. Preprocessing (Imputation/Encoding/Normalization/Scaling)
-    - Most features in this data set are categorical in nature. As such, I have used the `One Hot encoding/Target` functions to ensure that categorical variables are represented in binary nature.
-    - Numerical features appears to be skewed and in an attempt to normalize values, I have performed `log` transform to the features
-    - Many features have values that are NaN. These NaN represents around ~20% (or below) of each feature records in this data set. The use of imputation using the mode/Iterative Imputation will allow automatically populating of these NaN values to allow a more meaning data analysis.
-        - For the mode imputation, this may introduce a bias in the data modeling activities
-    - To prepare the data set for modeling, I have performed `scaling` to the data set to improve overall performance and reduce variance to all features (i.e., setting reference to a mean = 0)
-    - Something that I have done unique on my attempts are as follows:
-        - **Attempt 1**
-            - For categorical features that have less than 5k NaN values, I have filled it with the mode
-            - For categorical features that have more than 5k NaN values, I have filled used Iterative Imputation
-                - In order to do Iterative Imputation, all categorical feature records must be coverted to a numerical value where I have used Target Encoding
-            - I have performed Log Transform and Scaling outside of the pipeline for all features including `price` to ensure that everything is normally distributed  
-        - **Attempt 2**
-            - I have removed outliers from the `Odometer` feature. The log transform has been taken and outliers have been trimmed in an attempt to improve performance.
-            - I have filled all NaN values from the categorical features to its respective mode.
-            - I have used One Hot encoding and have instantiated it within the pipeline
-
-    
-3. Feature Selection (Initial)
-    - I have used a variety of techniques as an experiment and are as follows:
-        - **Attempt 1**
-            - VIF
-                - The results showed values less than 5, which means that multicolinearity does not exist
-            - SFS
-                - The results showed that `condition, cylinders, title_status, transmission, and drive` are features of interest
-            - Lasso feature selection
-                - The results are similar with SFS
-        - **Attempt 2**
-            - I have integrated Encoding (One Hot), Scaling, SFS (initial), PolynomialFeatures, and SFS (main) within the Pipeline
-
+1. Data Cleanup
+    - The overall data set entries are `45211` records and feature count of '16'
+       - There are no null values in the data set which is great
+       - There is a feature named `poutcome` which I have removed as `~81%` of its records are `unknown` and as such, it will not provide useful insigts to the model and will only increase resource utilization if added 
+    - The target data is imbalanced with `X% yes` and `Y% no`
+       - During the data splitting for training and validation, I have normalized the distribution of target value to equally distribute the target between these datasets using `stratify`
+       - This prompts that `Precision, Recall, and related metrics` are a better measure for performance in this activity
+    - After the removal of 'poutcome', the total number of features is '15'
+       - No additional number of features have been dropped from the dataset accordingly
+    - Model-ready Data Preparation
+       - Some features in the dataset are categorical in nature. As such, I have used `One Hot encoding/Target` functions to ensure that categorical variables are represented in binary nature.
+         - It should be noted that One Hot encoding was done to binary features, including the target, and Target encoding was done on non-binary features.
+       - After encoding, I have ensured that values are normalized by performing `scaling` and removed outliers by performing 'log transformation' on the datasets
+         - This is an attempt to improve model performance
+         - Note that the scaling was performed using the `StandardScaler()` function and `np.log(dataset+2)` where `2` is an arbitrary number to ensure no (or minimal) infinite /N/A values are generated within the data set
+         - After this process was completed, a total of `45162` (dropped `49` after the log transformation) records are retained
+ 
 ### Modeling
 <To Edit>
 
-This step will focus on creating models to predict the car price based on testing data set.
-For this activity, I have attempted to create multiple models based on my experimentation.
+This step will focus on creating models to predict the target (term depositon subscription) based on testing data set.
+For this activity, I have attempted to create multiple models and iterated them using HalvingRandomSearch (faster option) and GridSearchCV (slower option) to compare performance:
 
-Regression function used: 
-1. Ridge
+Notes:
+1. I have used the same dictionary of parameters for both functions
+2. Warnings are displayed to allow for troubleshooting (as required)
+3. During the experimentation phase, some functions do produce `max_iter` warnings and as such, applied a higher number to it.
+   - However, some outputs still do show the max_iter error and didn't have time to clean it up more due to time of model training execution and due to project time constraints
+4. HalvingRandomSearch performed faster than GridSearchCV but wanted to compare performance for higher number of datasets
 
-Pipeline Steps used: 
-1. Polynomial feature expansion
-2. Sequential feature selection
-3. Lasso feature selection
-4. Model Regression
-    
-To automate the process, a GridSearchCV object is used to iterate over a predefinied dictionary of parameters to acquire the best model. Based on the GridSearchCV training:
-    
-#### Attempt 1 (My Submission)
----
+The training model used for this activity are as follows:
+
+1. Logistic Regression
+2. Stochastic Gradient Descent (SGD) Classifier
+3. KNearest Neighbors
+4. Decision Trees
+5. Support Vector Machines (SVM)
+
+#####################################    
     
 <center>
     <img src = images/Attempt1.PNG width = 30%/>
