@@ -1,6 +1,6 @@
-# BH-PCMLAI-Module11
+# BH-PCMLAI-Module17
 
-This repository contains the practical application assignment for Module 11.
+This repository contains the practical application assignment for Module 17.
 Additional details are provided in this activity's Juniper Notebook.
 
 Notebook link: https://github.com/ksolivenhub/BH-PCMLAI-Module11/blob/main/ksoliven%20-%20prompt_II%20-%20fin.ipynb
@@ -28,6 +28,7 @@ This step will allow us to create a goal based on the current needs of an indivi
 The goal for this activity is:
 
 `To determine the best parameters that will be used in creating an optimum model that will predict the appropriate value for used cars`
+<To Edit>
     
 ### Data Understanding
 
@@ -38,7 +39,8 @@ This step will allow us to have a general understanding of data by analyzing rel
 </center>
 
 ### Data Preparation
-    
+<To Edit>
+
 This step will ensure that the data has been preprocessed and that it has been prepared before performing any modeling activities. For this project, I have used the following preprocessing techniques. Note that I have tried two (2) attempts
 
 - **Attempt 1 (My Submission)**
@@ -95,7 +97,8 @@ This step will ensure that the data has been preprocessed and that it has been p
             - I have integrated Encoding (One Hot), Scaling, SFS (initial), PolynomialFeatures, and SFS (main) within the Pipeline
 
 ### Modeling
-    
+<To Edit>
+
 This step will focus on creating models to predict the car price based on testing data set.
 For this activity, I have attempted to create multiple models based on my experimentation.
 
@@ -194,7 +197,8 @@ When comparing error with target (test set):
     
     
 ### Evaluation
-    
+<To Edit>
+
 For this section, the focus would be on my submission Attempt 1.   
 
 The following are my findings that can potentially improve my model and other useful information that I can share with the client:
@@ -230,6 +234,7 @@ The following are my findings that can potentially improve my model and other us
 
 
 ### Deployment
+<To Edit>
 
 Here is the summary report that can be provided to the client:
     
