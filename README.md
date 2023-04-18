@@ -4,7 +4,7 @@ This repository contains the practical application assignment for Module 17.
 Additional details are provided in this activity's Juniper Notebook.
 
 Notebook link: https://github.com/ksolivenhub/BH-PCMLAI-Module17/blob/main/ksoliven-practical-application-v1.ipynb
-
+Note: Note being displayed correctly in GitHub as I have added warnings during model training to perform troubleshooting which increased the size and GitHub is unable to display accordingly
 
 ## Methodology
 
@@ -84,6 +84,11 @@ For this project, I have performed the following preprocessing techniques:
        - There are no null values in the data set which is great
        - There is a feature named `poutcome` which I have removed as `~81%` of its records are `unknown` and as such, it will not provide useful insigts to the model and will only increase resource utilization if added 
     - The target data is imbalanced
+
+<center>
+    <img src = images/dataimbalance.png width = 70%/>
+</center>
+
        - During the data splitting for training and validation, I have normalized the distribution of target value to equally distribute the target between these datasets using `stratify`
        - This prompts that `Precision, Recall, and related metrics` are a better measure for performance in this activity
     - After the removal of 'poutcome', the total number of features is '15'
@@ -97,17 +102,18 @@ For this project, I have performed the following preprocessing techniques:
          - After this process was completed, a total of `45162` (dropped `49` after the log transformation) records are retained
  
 ### Modeling
-<To Edit>
 
-This step will focus on creating models to predict the target (term depositon subscription) based on testing data set.
+This step will focus on creating models to predict the target (term depositon subscription).
 For this activity, I have attempted to create multiple models and iterated them using HalvingRandomSearch (faster option) and GridSearchCV (slower option) to compare performance:
 
 Notes:
 1. I have used the same dictionary of parameters for both functions
 2. Warnings are displayed to allow for troubleshooting (as required)
+   - This have affected the GitHub view of the notebook
+   - Please download the Jupyter Notebook and view separately
 3. During the experimentation phase, some functions do produce `max_iter` warnings and as such, applied a higher number to it.
    - However, some outputs still do show the max_iter error and didn't have time to clean it up more due to time of model training execution and due to project time constraints
-4. HalvingRandomSearch performed faster than GridSearchCV but wanted to compare performance for higher number of datasets
+4. HalvingRandomSearchCV performed faster than GridSearchCV but wanted to compare performance for higher number of datasets
 
 The training model used for this activity are as follows:
 
@@ -119,85 +125,72 @@ The training model used for this activity are as follows:
 
 #####################################    
     
-<center>
-    <img src = images/Attempt1.PNG width = 30%/>
-</center>
-    
-In my first attempt, I have performed the following:
-    
-1. Perform a GridSearchCV over a Pipeline that uses PolynomialFeatures, another stage of SFS and Ridge Regression model.
-    
-2. I have performed two (2) test runs wherein each training model took between 1-4 hrs of training time.
+#### Modeling Results
 
-Below is the param_dict for the GridSearchCV object:
+Below are the parameter dictionary for both the HalvingRandomSearchCV and GridSearchCV objects:
 
-```    
-param_grid = {
-    'poly__degree': [1, 2, 3],
-    'sfs1__n_features_to_select': [3, 4],
-    'model__alpha': [10, 0, 0.1, 0.01]
-}
-```    
+
+| Logistic Regression | SGD Classifier | KNN | Decision Trees | SVM |
+| --- | --- | --- | --- | --- |
+| {'penalty': ['l1', 'l2'], 'C': [0.001, 0.01, 0.1, 1, 10, 100], 'multi_class': ['auto', 'ovr', 'multinomial'], 'max_iter': [100, 1000, 10000], 'fit_intercept': [True, False]} | {'loss': ['hinge', 'log_loss', 'modified_huber', 'squared_hinge', 'perceptron'], 'penalty': ['l2', 'l1', 'elasticnet'], 'alpha': [0.0001, 0.001, 0.01, 0.1], 'learning_rate': ['constant', 'optimal', 'invscaling', 'adaptive']} | {'n_neighbors': [3, 5, 7, 9, 11], 'weights': ['uniform', 'distance'], 'algorithm': ['auto', 'ball_tree', 'kd_tree', 'brute'], 'leaf_size': [10, 20, 30, 40, 50]} | {'criterion': ['gini', 'entropy'], 'max_depth': [5, 10, 20, 50], 'min_samples_split': [2, 5, 10, 20], 'min_samples_leaf': [1, 2, 4], 'max_leaf_nodes': [5, 10, 20]} | {'kernel': ['linear', 'poly', 'rbf', 'sigmoid']}
+
+##### HalvingRandomSearchCV Run
+
+In my first run, I have used HalvingRandomSearchCV to iterate the pre-defined parameter dictionaries for the five (5) models.
+
 The results are as follows:
 
-```    
-grid_search.best_params_
-Best parameters: {'model__alpha': 100, 'poly__degree': 3, 'sfs1__n_features_to_select': 4}
-    
-grid_search.best_score_    
-Best score: -0.9873754095247824
-
-```    
-
-When comparing error with target (test set):
-
-```    
-Test MAE: 0.5962240401620559 
-```    
-    
-#### Attempt 2 (Jupyter Notebook not included)
----
-   
 <center>
-    <img src = images/Attempt2.PNG width = 30%/>
+    <img src = images/hrd_1_results.png width = 70%/>
 </center>
 
-In my second attempt, I have performed the following: 
-
     
-1. Perform a GridSearchCV over a Pipeline that uses column(cat/num features) preprocessing techniques (One Hot Encoding and StandardScaler), 1st stage of SFS, PolynomialFeatures, and 2nd stage of SFS, and using the Ridge Regression model.    
+##### GridSearchCV Run
 
-2. I have performed two (2) test runs wherein each training model took between 1-4 hrs of training time.
+In my second run, I have used GridSearchCV to iterate the pre-defined parameter dictionaries for the five (5) models.
 
-Below is the param_dict for the GridSearchCV object:
-
-    
-Below is the param_dict for the GridSearchCV object:
-
-```    
-param_grid = {
-    'poly__degree': [1, 2, 3],
-    'sfs1__n_features_to_select': [3, 4],
-    'model__alpha': [10, 0, 0.1, 0.01]
-}
-```    
 The results are as follows:
 
-```    
-grid.best_params_
-Best parameters: {'feature_selection2__n_features_to_select': 5, 'model__alpha': 10, 'model__random_state': 42, 'poly_expansion__degree': 2}
-    
-grid.best_score_    
-Best score: -83226689944671.16
-    
-```    
+<center>
+    <img src = images/gcv_1_results.png width = 70%/>
+</center>
 
-When comparing error with target (test set):
+##### Initial Notes:
 
- 
+1. We are looking at the highest value of `Recall` - which can be seen using a `DecisionTree` model
+2. The values from both optimization functions did not have much significant difference
+3. HalvingRandomSearchCV was able to get the optimal values in a relatively fast rate compared with GridSearchCV
+4. I have not disabled the warnings in this section to review and significant errors and rectify them accordingly
+   - This have affected the GitHub view of the notebook
+   - Please download the Jupyter Notebook and view separately      
+5. During HalvingRandomSearchCV fitting, it produced several errors related to scoring
+    - Note 1: This was a result mostly of using the scoring metric as `roc-auc`
+    - Note 2: I have displayed all metrics as a way to compare values between trained models
+6. During GridSearchCV fitting, it produced several errors related to fit warnings and max_iter
+    - Note 1: This could be somehow related to the rate/way at which the model converges  
+    - Note 2: I have displayed all metrics as a way to compare values between trained models
+7. With SVC optimized by HalvingRandomSearchCV, `ROC AUC was valued NaN`
+8. With SVC optimized by GridSearchCV, `Precision, Recall, and F1 were valued 0`
+9. The goal is to make the project as simple as possible while yielding to high `Recall` score related to the Business Goal   
     
-    
-#####################################        
+**Based on these factors, we can go ahead and use/optimize the `Decision Tree model`**
+
+##### Decision Tree Model Optimization:
+
+At this time, the Recall score of our Decision Tree model is at `42.91%`. I have tried to optimize it using the following techniques:
+1. Resampling Techniques
+   - This was done via `RandomOverSampler` and `RandomUnderSampler`
+   - Improved the performance of the model by `~40%`
+2. Feature Selection
+   - This was done via `L1 Regularization`
+   - Improved the performance of the model by reducing complexity of hyperparameters
+3. Experimentation
+   - I have tried different modifications to the Decision Tree model and have yielded to what I consider the `best model`
+      - In terms of `Model Performance and Feature Complexity`
+
+<center>
+    <img src = images/best_model.png width = 70%/>
+</center>  
     
 ### Evaluation
 
