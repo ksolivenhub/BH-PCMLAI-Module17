@@ -86,7 +86,7 @@ For this project, I have performed the following preprocessing techniques:
     - The target data is imbalanced
 
 <center>
-    <img src = images/dataimbalance.png width = 70%/>
+    <img src = images/dataimbalance.png width = 50%/>
 </center>
 
        - During the data splitting for training and validation, I have normalized the distribution of target value to equally distribute the target between these datasets using `stratify`
@@ -141,7 +141,7 @@ In my first run, I have used HalvingRandomSearchCV to iterate the pre-defined pa
 The results are as follows:
 
 <center>
-    <img src = images/hrd_1_results.png width = 70%/>
+    <img src = images/hrd_1_results.png width = 80%/>
 </center>
 
     
@@ -152,7 +152,7 @@ In my second run, I have used GridSearchCV to iterate the pre-defined parameter 
 The results are as follows:
 
 <center>
-    <img src = images/gcv_1_results.png width = 70%/>
+    <img src = images/gcv_1_results.png width = 80%/>
 </center>
 
 ##### Initial Notes:
@@ -189,7 +189,7 @@ At this time, the Recall score of our Decision Tree model is at `42.91%`. I have
       - In terms of `Model Performance and Feature Complexity`
 
 <center>
-    <img src = images/best_model.png width = 70%/>
+    <img src = images/best_model.png width = 80%/>
 </center>  
     
 ### Evaluation
