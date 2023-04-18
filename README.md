@@ -117,11 +117,14 @@ Notes:
 
 The training model used for this activity are as follows:
 
+
 1. Logistic Regression
 2. Stochastic Gradient Descent (SGD) Classifier
 3. KNearest Neighbors
 4. Decision Trees
 5. Support Vector Machines (SVM)
+
+Note: No additional functions were added within the Pipeline when optimizing these models.
 
 #####################################    
     
