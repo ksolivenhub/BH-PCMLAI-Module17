@@ -4,7 +4,8 @@ This repository contains the practical application assignment for Module 17.
 Additional details are provided in this activity's Juniper Notebook.
 
 Notebook link: https://github.com/ksolivenhub/BH-PCMLAI-Module17/blob/main/ksoliven-practical-application-v1.ipynb
-Note: Note being displayed correctly in GitHub as I have added warnings during model training to perform troubleshooting which increased the size and GitHub is unable to display accordingly
+<br>
+Note: Not being displayed correctly in GitHub as I have added warnings during model training to perform troubleshooting which increased the size and GitHub is unable to display accordingly
 
 ## Methodology
 
@@ -83,12 +84,7 @@ For this project, I have performed the following preprocessing techniques:
     - The overall data set entries are `45211` records and feature count of '16'
        - There are no null values in the data set which is great
        - There is a feature named `poutcome` which I have removed as `~81%` of its records are `unknown` and as such, it will not provide useful insigts to the model and will only increase resource utilization if added 
-    - The target data is imbalanced
-
-<center>
-    <img src = images/dataimbalance.png width = 50%/>
-</center>
-
+    - The target data is imbalanced (see image below)
        - During the data splitting for training and validation, I have normalized the distribution of target value to equally distribute the target between these datasets using `stratify`
        - This prompts that `Precision, Recall, and related metrics` are a better measure for performance in this activity
     - After the removal of 'poutcome', the total number of features is '15'
@@ -100,7 +96,12 @@ For this project, I have performed the following preprocessing techniques:
          - This is an attempt to improve model performance
          - Note that the scaling was performed using the `StandardScaler()` function and `np.log(dataset+2)` where `2` is an arbitrary number to ensure no (or minimal) infinite / N/A values are generated within the data set
          - After this process was completed, a total of `45162` (dropped `49` after the log transformation) records are retained
- 
+
+<center>
+    <img src = images/dataimbalance.png width = 50%/>
+</center>
+<br>
+
 ### Modeling
 
 This step will focus on creating models to predict the target (term depositon subscription).
@@ -125,8 +126,6 @@ The training model used for this activity are as follows:
 5. Support Vector Machines (SVM)
 
 Note: No additional functions were added within the Pipeline when optimizing these models.
-
-#####################################    
     
 #### Modeling Results
 
@@ -192,7 +191,7 @@ At this time, the Recall score of our Decision Tree model is at `42.91%`. I have
       - In terms of `Model Performance and Feature Complexity`
 
 <center>
-    <img src = images/best_model.png width = 80%/>
+    <img src = images/best_model1.PNG width = 80%/>
 </center>  
     
 ### Evaluation
@@ -233,7 +232,6 @@ The following are my findings that can potentially improve my model and other us
 3. `May` is a busy month for attempting to convince clients for a term deposit subscription
     - This is an assertion based on this one-year data snapshot and can be used to improve activity and resource allocation when trying to contact clients to convince for a term deposit subscription
 
-
 ### Deployment
 
 Here is the summary report that can be provided to the client:
@@ -242,11 +240,11 @@ Goal: **The classification goal is to predict if the client will subscribe a ter
 
     
 Based on the results of this analysis, we can conclude that an `optimized DecisionTree model` is able to predict the classification of the client (subscription to term deposit) with a `Recall` score fo `87.34%` based on the following factors:
-    - `job`
-    - `housing`
-    - `contact`
-    - `month`
-    - `duration`
+   - `job`
+   - `housing`
+   - `contact`
+   - `month`
+   - `duration`
     
 To improve future models, investment on data management and model resource utilization must be considered
    - Unknown values have to be cleaned up as this will not offer additional insight in this context
