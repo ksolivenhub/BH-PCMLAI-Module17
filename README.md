@@ -3,7 +3,7 @@
 This repository contains the practical application assignment for Module 17.
 Additional details are provided in this activity's Juniper Notebook.
 
-Notebook link: https://github.com/ksolivenhub/BH-PCMLAI-Module11/blob/main/ksoliven%20-%20prompt_II%20-%20fin.ipynb
+Notebook link: https://github.com/ksolivenhub/BH-PCMLAI-Module17/blob/main/ksoliven-practical-application-v1.ipynb
 
 
 ## Methodology
@@ -25,9 +25,10 @@ The activity is based from the CRISP-DM framework which follows the following hi
 ### Business Understanding
     
 This step will allow us to create a goal based on the current needs of an individual/organization.
-The goal for this activity is:
 
-`To predict if the client will subscribe a term deposit or not`
+**The classification goal is to predict if the client will subscribe a term deposit (variable y).**
+<br>
+**For this project, it would be great to have a score of `80%` accordingly**
 
 The data used in this modeling activity is related with direct marketing campaigns of a Portuguese banking institution. 
 Often, more than one contact to the same client was required, in order to access if the product (bank term deposit) would be (or not) subscribed.
@@ -37,7 +38,7 @@ Note: Term Deposits are deposits that are usually made for a few months to sever
     
 ### Data Understanding
 
-This step will allow us to have a general understanding of data by analyzing relationships, identify data quality issues, and create visualizations about the features found in the data set. Based on this activity, we would want to predict the sale price of cars and as such, this is a Regression problem.
+This step will allow us to have a general understanding of data by analyzing relationships, identify data quality issues, and create visualizations about the features found in the data set. Based on this activity, we would want to predict the classification of term deposit subscriptions and as such, this is a Classification problem.
     
 <center>
     <img src = images/sklearn_algo_cs.png width = 70%/>
@@ -82,7 +83,7 @@ For this project, I have performed the following preprocessing techniques:
     - The overall data set entries are `45211` records and feature count of '16'
        - There are no null values in the data set which is great
        - There is a feature named `poutcome` which I have removed as `~81%` of its records are `unknown` and as such, it will not provide useful insigts to the model and will only increase resource utilization if added 
-    - The target data is imbalanced with `X% yes` and `Y% no`
+    - The target data is imbalanced
        - During the data splitting for training and validation, I have normalized the distribution of target value to equally distribute the target between these datasets using `stratify`
        - This prompts that `Precision, Recall, and related metrics` are a better measure for performance in this activity
     - After the removal of 'poutcome', the total number of features is '15'
@@ -92,7 +93,7 @@ For this project, I have performed the following preprocessing techniques:
          - It should be noted that One Hot encoding was done to binary features, including the target, and Target encoding was done on non-binary features.
        - After encoding, I have ensured that values are normalized by performing `scaling` and removed outliers by performing 'log transformation' on the datasets
          - This is an attempt to improve model performance
-         - Note that the scaling was performed using the `StandardScaler()` function and `np.log(dataset+2)` where `2` is an arbitrary number to ensure no (or minimal) infinite /N/A values are generated within the data set
+         - Note that the scaling was performed using the `StandardScaler()` function and `np.log(dataset+2)` where `2` is an arbitrary number to ensure no (or minimal) infinite / N/A values are generated within the data set
          - After this process was completed, a total of `45162` (dropped `49` after the log transformation) records are retained
  
 ### Modeling
@@ -196,68 +197,62 @@ When comparing error with target (test set):
  
     
     
-    
+#####################################        
     
 ### Evaluation
-<To Edit>
-
-For this section, the focus would be on my submission Attempt 1.   
 
 The following are my findings that can potentially improve my model and other useful information that I can share with the client:
     
 ##### A. Internal Findings
 1. The use of a powerful machine to run slightly complex models is a must to ensure processing speed
-    - I have seen that my CPU and memory average at 100 and 90% respectively
-2. We can revisit a better way to handle the following:
-    - Maybe there is a more robust way to relate features that have thousands of unique entries to the data set
-    - Maybe we can incorporate some items that I did with my **2nd attempt** with the **1st attempt** to further performance
-        - Such as outlier trimming, pipeline instantiation, and others
-3. Based on the final model, the most crucial features that determine the price are:
-    - `condition`
-    - `cylinders`
-    - `drive`
-4. I have selected an evaluation metric MAE to remove any bias related with outliers.
-    - Mean Absolute Error (MAE) is a metric used to evaluate the performance of a regression model. It measures the average absolute difference between the predicted values and the true values. The lower the MAE, the better the model's performance, as it indicates that the model's predictions are closer to the true values.
-    - `Best Model MAE: 0.596`
-    
+    - This is specially true for `SVC, KNN, and SGDClassifier` (arranged from highest execution time to lowest)
+    - Experimentation can be done with these models but a significant blocker is the compute resource and time of execution
+2. Based on the final model, the most important features that allows for predicting the target are as follows:
+    - `job`
+    - `housing`
+    - `contact`
+    - `month`
+    - `duration`
+3. `DecisionTree` was the best model - however, the model has to be optimized to improve the `Recall` metric
+4. Applying `resampling techniques` for this problem have significantly improve the model prediction by almost `~40%` from the base Recall score
+5. Applying `feature selection` allowed for the complexity of parameters yielding a higher recall score to be reduce, improving overall performance of the model
+    - The use of `feature selection` with classification problems will not affect the results of the model even if used early on the process and could even improve performance
+6. Using `GridSearchCV` and `HalvingRandomSearchCV` did not produce significant different on Recall scores
+    - HalvingRandomSearchCV was able to get the optimal values in a relatively fast rate compared with GridSearchCV
+7. Selecting the best score is not enough as we have to ensure that the best parameters would make sense
+    - I have extracted the `cv_results`, analyzed which set of parameters does makes sense from the top ranked scores, and have selected it as the best parameters for my final model
+8. The final model yielded an `87.34%` recall score, which matches with the goal for this project
+9. We can revisit a more robust way to handle the following:
+    - Sampling - as resampling techniques used namely `ROS/RUS` either trims the majority target data or creates random duplicates of the minority target data - which can create less optimal solutions
+    - Normalization - as the normalization technique that I used namely `log-transformation` trimmed some data (but this has been minimized with trial/error)
+    - Outlier Trimming - instead of the `log-transform` used, a consideration of just removing the outliers directly and testing could potentially yield to interesting results
+    - Model Selection - this is affected with the compute resource that I use when training the model
+10. Some information have minority records that are unknown (that was retained), which could have been trimmed and tested if it will improve performance
+
 ##### B. Client Information
-1. I found that certain `price` entries is a bit ambiguous such that the cost is less than the normal value
-    - Some values only between 1-3 digit values
-2. The way the client record model is not the greatest
-    - Unique models values is about 29k
-    - Most of these are misspelled, a repetition of the manufacturer, NaN but has a manufacturer information, or incorrectly labeled
-    - Some details from the manufacturer feature are missing but is found under model
-3. I have seen that each state/region's car sales pricing is standardized
-    - I am not sure if this is expected or not
-4. VIN entries are duplicated
-    - With this, some fields will be, in effect, not as useful
-5. There is an interesting group that was not properly documented which are related to semi trucks
-    - This could be strongly related to manufacturer, model, and odometer readings that have very high values
+1. Majority of the dataset is `imbalanced`
+    - As this is a production data (of bank clients related to term deposit subscription), there is dataset limitation with respect to this factor
+2. Some features have `unknown` record values
+    - This could be improved by the bank in order to ensure that a clean data is available for data analysis
+3. `May` is a busy month for attempting to convince clients for a term deposit subscription
+    - This is an assertion based on this one-year data snapshot and can be used to improve activity and resource allocation when trying to contact clients to convince for a term deposit subscription
 
 
 ### Deployment
-<To Edit>
 
 Here is the summary report that can be provided to the client:
     
-Goal: To determine the best parameters that will be used in creating an optimum model that will predict the appropriate value for used cars
-    
-Based on the results of this analysis, we can conclude that the model is able to predict the price of vehicles based on the following metrics with a minimal degree of error.
-- `condition`
-- `cylinders`
-- `drive`
+Goal: **The classification goal is to predict if the client will subscribe a term deposit (variable y).**
 
-The following are the recommendations that can be used moving forward:
-1. Use the metrics obtained from the model to perform car pricing initiatives within the organization
-   - A simple formula can be obtained which are as follows:
-  
-  ```
-  price_pred = 'condition'*(-0.05614311) +  'cylinders^2'*(0.04209613) + 'cylinders^3'*(0.01194092) + 'drive^3'*(0.04234781)
-  ```  
     
-   - Note that the variables `condition`, `cylinders`, and `drive` should be numerically represented which can be taken from the analysis
+Based on the results of this analysis, we can conclude that an `optimized DecisionTree model` is able to predict the classification of the client (subscription to term deposit) with a `Recall` score fo `87.34%` based on the following factors:
+    - `job`
+    - `housing`
+    - `contact`
+    - `month`
+    - `duration`
     
-2. To improve future models, investment on data management must be considered
-   - Price information has to be cleaned up as some values are only between 1-3 digit values
-   - Cnsider improving data related to semi trucks to improve pricing predictions for this group accordingly
-   - Ensure that the models feature needs to be standardized accordingly considering its 29k unique entries
+To improve future models, investment on data management and model resource utilization must be considered
+   - Unknown values have to be cleaned up as this will not offer additional insight in this context
+   - Ensure that sufficient compute resources are invested to explore other alternatives if a higher degree of Recall score is considered
+   - To create a more robust model, explore options to allow the improvement of Precision and/or F1 score as required.
